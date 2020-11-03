@@ -7,6 +7,7 @@ Given /the following movies exist/ do |movies_table|
   end
 end
 
+
 Then /(.*) seed movies should exist/ do | n_seeds |
   Movie.count.should be n_seeds.to_i
 end
@@ -28,10 +29,17 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
-  fail "Unimplemented"
+  check = !uncheck
+  rating_list.split(', ') do |rating| 
+      if check
+          steps %Q{Given I check "ratings[#{rating}]"}
+      else
+          steps %Q{Given I uncheck "ratings[#{rating}]"}
+      end
+  end
 end
 
 Then /I should see all the movies/ do
   # Make sure that all the movies in the app are visible in the table
-  fail "Unimplemented"
+  expect(page.all("#movies tr").size).to eq 11
 end
